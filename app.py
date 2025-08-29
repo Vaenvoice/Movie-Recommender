@@ -10,7 +10,7 @@ import ast
 
 @st.cache_data
 def load_data():
-    url = "https://raw.githubusercontent.com/Vaenvoice/Movie-Recommender/main/data/tmdb_5000_movies.csv"
+    url = "https://raw.githubusercontent.com/Vaenvoice/Movie-Recommender/main/Data/tmdb_5000_movies.csv"
     df = pd.read_csv(url)
 
     movies = df[['title', 'genres', 'keywords', 'overview']]
