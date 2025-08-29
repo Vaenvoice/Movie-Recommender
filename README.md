@@ -59,13 +59,6 @@ Movie-Recommender/
    ```bash
    streamlit run app.py
 
-# 📝 Requirements
-
-Listed in requirements.txt. Install them with:
-   ```bash
-   pip install -r requirements.txt
-
-
 # Core packages:
 
 pandas
@@ -76,4 +69,11 @@ streamlit
 
 Source: Kaggle - TMDB 5000 Movie Dataset
 
-File used: tmdb_5000_movies.csv   
+File used: tmdb_5000_movies.csv  
+
+# 📝 Requirements
+ Listed in requirements.txt. Install them with:
+   ```bash
+    pip install -r requirements.txt
+
+
