@@ -4,10 +4,15 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import ast
 
-# Load and process data (same as recommender.py)
+# ----------------------------
+# Load and Process Data
+# ----------------------------
+
 @st.cache_data
 def load_data():
-    df = pd.read_csv("data/tmdb_5000_movies.csv")
+    url = "https://raw.githubusercontent.com/Vaenvoice/Movie-Recommender/main/data/tmdb_5000_movies.csv"
+    df = pd.read_csv(url)
+
     movies = df[['title', 'genres', 'keywords', 'overview']]
 
     def convert(text):
@@ -32,23 +37,21 @@ def compute_similarity(movies):
     similarity = cosine_similarity(vectors)
     return similarity
 
-# Recommend function
 def recommend(movie_title, movies, similarity):
     movie_title = movie_title.lower()
     try:
         index = movies[movies['title'].str.lower() == movie_title].index[0]
     except IndexError:
         return []
-
     distances = list(enumerate(similarity[index]))
     sorted_movies = sorted(distances, key=lambda x: x[1], reverse=True)
     return [movies.iloc[i[0]].title for i in sorted_movies[1:6]]
 
 # ----------------------------
-# Streamlit UI Starts Here
+# Streamlit UI
 # ----------------------------
-st.set_page_config(page_title="Movie Recommender", layout="centered")
 
+st.set_page_config(page_title="Movie Recommender", layout="centered")
 st.title("🎬 Movie Recommender System")
 st.write("Select a movie to get similar movie suggestions.")
 
@@ -64,8 +67,9 @@ selected_movie = st.selectbox("Choose a movie", movie_list)
 if st.button("Show Recommendations"):
     recommendations = recommend(selected_movie, movies, similarity)
     if recommendations:
-        st.success("Because you liked **{}**, you might also like:".format(selected_movie))
+        st.success(f"Because you liked **{selected_movie}**, you might also like:")
         for rec in recommendations:
             st.write("✅ " + rec)
     else:
         st.warning("Movie not found.")
+
