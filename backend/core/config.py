@@ -3,13 +3,29 @@ from typing import Optional
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Netflix AI Recommender"
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/netflix_db"
+    DATABASE_URL: Optional[str] = None
     SECRET_KEY: str = "YOUR_SUPER_SECRET_KEY"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 * 24 * 60
     TMDB_API_KEY: str = ""
 
+    @property
+    def async_database_url(self) -> str:
+        url = self.DATABASE_URL
+        if not url:
+            # Local fallback for development if env is missing
+            return "postgresql+asyncpg://postgres:postgres@localhost:5432/netflix_db"
+        
+        # Render and other providers often use postgres:// but asyncpg needs postgresql+asyncpg://
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif url.startswith("postgresql://") and "+asyncpg" not in url:
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        
+        return url
+
     class Config:
         env_file = ".env"
+        extra = "ignore"
 
 settings = Settings()
