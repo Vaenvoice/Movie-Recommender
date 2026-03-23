@@ -1,9 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import Navbar from '../components/Navbar';
-import Banner from '../components/Banner';
-import MovieCard from '../components/MovieCard';
+import API_BASE_URL from '../api/config';
 
 const Category = ({ type }) => {
   const [movies, setMovies] = useState([]);
@@ -17,7 +12,7 @@ const Category = ({ type }) => {
   const filterRef = useRef(null);
   const sortRef = useRef(null);
 
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     fetchGenres();

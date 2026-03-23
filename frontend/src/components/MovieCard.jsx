@@ -1,8 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import ReactPlayer from 'react-player/youtube';
+import API_BASE_URL from '../api/config';
 
 const MovieCard = ({ movie }) => {
   const navigate = useNavigate();
@@ -28,7 +24,7 @@ const MovieCard = ({ movie }) => {
   }, []);
   
   const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
   const mediaType = movie.media_type || (movie.name ? 'tv' : 'movie');
 
   const handleMouseEnter = () => {

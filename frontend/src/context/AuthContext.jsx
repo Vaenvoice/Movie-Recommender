@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import API_BASE_URL from '../api/config';
 
 const AuthContext = createContext();
 
@@ -8,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     if (token) {

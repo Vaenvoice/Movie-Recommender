@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Navbar from '../components/Navbar';
-import Banner from '../components/Banner';
-import Row from '../components/Row';
-import { useAuth } from '../context/AuthContext';
+import API_BASE_URL from '../api/config';
 
 const Home = () => {
   const [trending, setTrending] = useState([]);
@@ -12,7 +7,7 @@ const Home = () => {
   const [personalized, setPersonalized] = useState([]);
   const [heroMovie, setHeroMovie] = useState(null);
   
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     fetchData();

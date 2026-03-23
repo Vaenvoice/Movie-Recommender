@@ -1,9 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Play, Info, Plus, Check, Volume2, VolumeX } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-import ReactPlayer from 'react-player/youtube';
+import API_BASE_URL from '../api/config';
 
 const Banner = ({ movie }) => {
   const navigate = useNavigate();
@@ -14,6 +9,8 @@ const Banner = ({ movie }) => {
   const [isVisible, setIsVisible] = useState(true);
   const bannerRef = useRef(null);
   const playerRef = useRef(null);
+  
+  const API_URL = API_BASE_URL;
 
   // Track visibility with IntersectionObserver
   useEffect(() => {
@@ -52,7 +49,7 @@ const Banner = ({ movie }) => {
     const fetchVideo = async () => {
       try {
         const mediaType = movie.media_type || (movie.name ? 'tv' : 'movie');
-        const res = await axios.get(`http://127.0.0.1:8000/movies/video/${mediaType}/${movie.id}`);
+        const res = await axios.get(`${API_URL}/movies/video/${mediaType}/${movie.id}`);
         const videos = res.data.results || [];
         const trailer = videos.find(v => v.type === "Trailer" && v.site === "YouTube");
         

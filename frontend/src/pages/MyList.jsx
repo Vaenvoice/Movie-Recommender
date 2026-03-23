@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Navbar from '../components/Navbar';
-import MovieCard from '../components/MovieCard';
-import { useAuth } from '../context/AuthContext';
-import { Plus } from 'lucide-react';
+import API_BASE_URL from '../api/config';
 
 const MyList = () => {
   const [movies, setMovies] = useState([]);
   const { user } = useAuth();
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     if (user?.watchlist && user.watchlist.length > 0) {

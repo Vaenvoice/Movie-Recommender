@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Navbar from '../components/Navbar';
-import MovieCard from '../components/MovieCard';
-import { Search as SearchIcon } from 'lucide-react';
+import API_BASE_URL from '../api/config';
 
 const Search = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     fetchTrending();

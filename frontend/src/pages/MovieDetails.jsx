@@ -1,10 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Navbar from '../components/Navbar';
-import Row from '../components/Row';
-import { Play, Plus, Check, X } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import API_BASE_URL from '../api/config';
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -12,7 +6,7 @@ const MovieDetails = () => {
   const { user, toggleWatchlist } = useAuth();
   const [movie, setMovie] = useState(null);
   const [similar, setSimilar] = useState([]);
-  const API_URL = "http://127.0.0.1:8000";
+  const API_URL = API_BASE_URL;
 
   const isInWatchlist = user?.watchlist?.includes(Number(id));
 
