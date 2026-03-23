@@ -4,12 +4,14 @@ import ReactPlayer from 'react-player/youtube';
 import axios from 'axios';
 import { ArrowLeft } from 'lucide-react';
 
+import API_BASE_URL from '../api/config';
+
 const Watch = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [trailerUrl, setTrailerUrl] = useState('');
   const [movie, setMovie] = useState(null);
-  const API_URL = "http://localhost:8000";
+  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     fetchTrailer();

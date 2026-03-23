@@ -1,4 +1,9 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import API_BASE_URL from '../api/config';
+import Navbar from '../components/Navbar';
+import Banner from '../components/Banner';
+import Row from '../components/Row';
 
 const Home = () => {
   const [trending, setTrending] = useState([]);

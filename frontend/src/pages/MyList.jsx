@@ -1,4 +1,10 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import { Plus } from 'lucide-react';
 import API_BASE_URL from '../api/config';
+import Navbar from '../components/Navbar';
+import MovieCard from '../components/MovieCard';
 
 const MyList = () => {
   const [movies, setMovies] = useState([]);

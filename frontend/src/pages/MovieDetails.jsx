@@ -1,4 +1,11 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import { Play, Check, Plus, X } from 'lucide-react';
 import API_BASE_URL from '../api/config';
+import Navbar from '../components/Navbar';
+import Row from '../components/Row';
 
 const MovieDetails = () => {
   const { id } = useParams();

@@ -1,4 +1,9 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Search as SearchIcon } from 'lucide-react';
 import API_BASE_URL from '../api/config';
+import Navbar from '../components/Navbar';
+import MovieCard from '../components/MovieCard';
 
 const Search = () => {
   const [query, setQuery] = useState('');

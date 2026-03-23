@@ -1,3 +1,8 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import ReactPlayer from 'react-player';
 import API_BASE_URL from '../api/config';
 
 const MovieCard = ({ movie }) => {

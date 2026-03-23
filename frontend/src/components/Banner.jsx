@@ -1,3 +1,9 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
+import ReactPlayer from 'react-player';
+import { VolumeX, Volume2, Play, Check, Plus, Info } from 'lucide-react';
 import API_BASE_URL from '../api/config';
 
 const Banner = ({ movie }) => {
