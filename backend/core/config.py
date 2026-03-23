@@ -12,8 +12,20 @@ class Settings(BaseSettings):
     @property
     def async_database_url(self) -> str:
         url = self.DATABASE_URL
+        
+        # Explicit debugging for the user in Render logs
+        import os
+        if "RENDER" in os.environ:
+            if not url:
+                print("CRITICAL: DATABASE_URL environment variable is MISSING on Render!")
+                print("Please go to the Render Dashboard -> Environment -> Add Environment Variable")
+                # Intentionally not falling back to localhost on Render
+                raise ValueError("DATABASE_URL is missing in Render environment.")
+            else:
+                print(f"INFO: DATABASE_URL detected from Render Environment (protocol: {url.split(':')[0]})")
+        
         if not url:
-            # Local fallback for development if env is missing
+            # Local fallback for development ONLY
             return "postgresql+asyncpg://postgres:postgres@localhost:5432/netflix_db"
         
         # Render and other providers often use postgres:// but asyncpg needs postgresql+asyncpg://
