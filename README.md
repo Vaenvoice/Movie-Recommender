@@ -15,22 +15,22 @@ The platform follows a modern full-stack decoupled architecture with a specializ
 ```mermaid
 graph TD
     User((User)) -->|Interacts| FE[React Frontend]
-    FE -->|GET /recommend/personalized| BE[FastAPI Backend]
+    FE -->|"GET /recommend/personalized"| BE[FastAPI Backend]
     
     subgraph "AI Recommendation Engine"
-        BE -->|Fetch History/Likes| DB[(PostgreSQL)]
-        BE -->|Fetch Candidates| TMDB[TMDB API]
-        DB -->|Metadata| Profile[User Profile Generator]
-        TMDB -->|Raw Results| Pre[Text Preprocessor]
-        Profile -->|Liked Movie Text| Pre
-        Pre -->|Cleaned Content Strings| TFIDF[TF-IDF Vectorizer]
-        TFIDF -->|Numerical Vectors| SIM[Cosine Similarity]
-        SIM -->|Similarity Scores| Rank[Re-ranking Logic]
-        Rank -->|Sorted List| BE
+        BE -->|"Fetch History/Likes"| DB[(PostgreSQL)]
+        BE -->|"Fetch Candidates"| TMDB[TMDB API]
+        DB -->|"Metadata"| Profile[User Profile Generator]
+        TMDB -->|"Raw Results"| Pre[Text Preprocessor]
+        Profile -->|"Liked Movie Text"| Pre
+        Pre -->|"Cleaned Content Strings"| TFIDF[TF-IDF Vectorizer]
+        TFIDF -->|"Numerical Vectors"| SIM[Cosine Similarity]
+        SIM -->|"Similarity Scores"| Rank[Re-ranking Logic]
+        Rank -->|"Sorted List"| BE
     end
     
-    BE -->|JSON Response (Top 10)| FE
-    FE -->|Visual Feedback| User
+    BE -->|"JSON Response (Top 10)"| FE
+    FE -->|"Visual Feedback"| User
 ```
 
 ### 🧠 AI Recommendation Lifecycle
