@@ -1,57 +1,65 @@
-# Netflix-Style AI Movie Recommender
+# Vaen TV+ 🎬
 
-A high-performance, full-stack movie discovery and streaming platform built with **FastAPI**, **React**, and **PostgreSQL**. This project features personalized AI recommendations and a premium Netflix-inspired UI.
+[![Live Demo](https://img.shields.io/badge/Live-Demo-0071e3?style=for-the-badge&logo=vercel)](https://vaentv.vercel.app/)
 
-## 🚀 Features
+A premium, high-fidelity movie discovery and streaming platform inspired by the sleek aesthetics of Apple TV. Built with a modern full-stack architecture, featuring personalized AI recommendations and an immersive user experience.
 
-- **Auth**: JWT-based Secure Login/Signup.
-- **UI/UX**: Smooth Framer Motion animations, Hover-expansion cards, and Dark Theme.
-- **AI Engine**: Content-based recommendations (Because you watched X).
-- **Search**: Real-time debounced movie search via TMDB API.
-- **Streaming**: Interactive video player for movie trailers.
-- **Interactions**: Like/Dislike system to tune your recommendations.
+![Vaen TV+ Dashboard](docs/preview.png)
+
+## ✨ Premium Experience
+
+Vaen TV+ is designed for those who appreciate visual excellence. With a focus on **glassmorphism**, **vibrant typography**, and **fluid animations**, it offers more than just a movie list—it offers a cinematic journey.
+
+### 🌟 Key Features
+
+- **Vaen ID Auth**: Secure, unified authentication system (Rebranded from Apple ID).
+- **Immersive UI**: Glassmorphic components, backdrop-driven dynamic themes, and smooth Framer Motion transitions.
+- **AI-Powered Discovery**: Intelligent "Recommended for You" engine using content-based filtering.
+- **Cinematic Trailers**: Integrated high-definition video player with auto-play previews.
+- **Smart Search**: Real-time, debounced global search across thousands of titles via TMDB.
+- **Personal Library**: One-click watchlist management to save your favorite movies and shows.
+
+---
+
+## 🚀 Quick Start
+
+### Live Link
+Access the production deployment here: [**https://vaentv.vercel.app/**](https://vaentv.vercel.app/)
+
+### Local Installation
+
+#### 1. Backend (FastAPI)
+```bash
+cd backend
+python -m venv .venv
+# Activate venv: .\.venv\Scripts\activate (Windows) or source .venv/bin/activate (Unix)
+pip install -r requirements.txt
+# Configure .env with TMDB_API_KEY and DATABASE_URL
+uvicorn main:app --reload
+```
+
+#### 2. Frontend (React + Vite)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React (Vite), Tailwind CSS, Framer Motion, Axios, React Player.
-- **Backend**: FastAPI (Python), SQLAlchemy (Async), PostgreSQL, **Cachetools** (Caching).
-- **Database**: PostgreSQL.
-- **ML**: Scikit-Learn for recommendation similarity.
-
-## ⚡ Performance Optimizations
-
-This project has been optimized for speed and efficiency:
-- **API Caching**: In-memory TTL caching for TMDB results (Trending, Popular, Genres) reduces latency by up to **11x**.
-- **Connection Pooling**: Persistent HTTP clients prevent connection overhead.
-- **Payload Compression**: Gzip compression enabled on the backend to minimize network transfer weight.
-- **Lazy Loading**: Frontend images load only as they enter the viewport to improve initial TTI (Time to Interactive).
-
-## 📦 Setup Instructions
-
-### 1. Prerequisites
-- Node.js & npm
-- Python 3.10+
-- **PostgreSQL**: Running locally or on a cloud provider.
-- **TMDB API Key**: Register at [TMDB](https://www.themoviedb.org/) to get an API Key.
-
-### 2. Backend Setup
-1. Navigate to the backend folder: `cd backend`
-2. Create virtual environment: `python -m venv .venv`
-3. Activate it:
-   - Windows: `.\.venv\Scripts\activate`
-   - Linux/Mac: `source .venv/bin/activate`
-4. Install dependencies: `pip install -r requirements.txt`
-5. Create a `.env` file (copy `.env.example`) and add your `TMDB_API_KEY` and `DATABASE_URL`.
-6. Run server: `uvicorn main:app --reload`
-
-### 3. Frontend Setup
-1. Navigate to the frontend folder: `cd frontend`
-2. Install dependencies: `npm install`
-3. Start the dev server: `npm run dev`
-4. Open `http://localhost:5173` (Vite default) in your browser.
-
-## 🧠 Recommendation Logic
-The system tracks your "Liked" movies and "Watch History". It then uses a hybrid similarity approach against the TMDB discovery engine to find movies with similar genres, plots, and tags to provide a "Recommended for You" row.
+- **Frontend**: `React 18`, `Vite`, `Tailwind CSS`, `Framer Motion`, `Lucide React`.
+- **Backend**: `FastAPI`, `SQLAlchemy`, `PostgreSQL`, `Scikit-Learn` (ML).
+- **External API**: `TMDB API` for real-time movie metadata.
 
 ---
-Built with ❤️ for a premium movie experience.
+
+## 🎨 Design Philosophy
+
+The project adheres to "Google Health" inspired minimalism merged with "Apple" premium aesthetics:
+- **SF Pro** inspired typography for maximum readability.
+- **Subtle Gradients** and depth through multi-layered shadows.
+- **Micro-interactions** that make the interface feel alive.
+
+Created with passion for the ultimate viewing experience. 🍿

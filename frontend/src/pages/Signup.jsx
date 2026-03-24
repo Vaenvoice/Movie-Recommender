@@ -84,7 +84,7 @@ const Signup = () => {
           </form>
           
           <div className="mt-10 text-center">
-             <span className="text-white/40 text-sm">Already have an Apple ID? </span>
+             <span className="text-white/40 text-sm">Already have a Vaen ID? </span>
             <Link to="/login" className="text-appleBlue hover:text-blue-400 transition-colors text-sm font-medium">Sign in here</Link>
           </div>
         </div>

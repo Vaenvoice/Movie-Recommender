@@ -50,7 +50,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <input 
               type="email" 
-              placeholder="Email or Apple ID" 
+              placeholder="Email or Vaen ID" 
               className="p-4 bg-white/5 border border-white/10 rounded-apple text-white focus:outline-none focus:ring-2 focus:ring-appleBlue/50 transition-all placeholder:text-white/20"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -74,7 +74,7 @@ const Login = () => {
           </form>
           
           <div className="mt-10 text-center">
-            <Link to="/signup" className="text-appleBlue hover:text-blue-400 transition-colors text-sm font-medium">Create New Apple ID</Link>
+            <Link to="/signup" className="text-appleBlue hover:text-blue-400 transition-colors text-sm font-medium">Create New Vaen ID</Link>
           </div>
         </div>
       </div>
