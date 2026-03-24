@@ -22,8 +22,9 @@ const Login = () => {
       await login(email, password);
       // Redirect handled by useEffect
     } catch (err) {
-      console.error("Login error:", err);
-      setError(err.response?.data?.detail || 'Invalid email or password');
+      console.error("Login UI error:", err);
+      const message = err.response?.data?.detail || err.message || 'Invalid email or password';
+      setError(message);
     } finally {
       setLoading(false);
     }

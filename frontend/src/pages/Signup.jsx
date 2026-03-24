@@ -22,10 +22,11 @@ const Signup = () => {
     try {
       await signup({ name, email, password });
       await login(email, password);
-      navigate('/');
+      // navigation handled by token useEffect
     } catch (err) {
       console.error("Signup error:", err);
-      setError(err.response?.data?.detail || "Something went wrong. Please try again.");
+      const message = err.response?.data?.detail || err.message || "Something went wrong. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }

@@ -47,14 +47,31 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (email, password) => {
-    const formData = new FormData();
-    formData.append('username', email);
-    formData.append('password', password);
-    
-    const response = await axios.post(`${API_URL}/auth/login`, formData);
-    const { access_token } = response.data;
-    localStorage.setItem('token', access_token);
-    setToken(access_token);
+    try {
+      setLoading(true);
+      const params = new URLSearchParams();
+      params.append('username', email);
+      params.append('password', password);
+      
+      const response = await axios.post(`${API_URL}/auth/login`, params, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        timeout: 60000 // 60 seconds for Render cold start
+      });
+      
+      const { access_token } = response.data;
+      localStorage.setItem('token', access_token);
+      setToken(access_token);
+    } catch (error) {
+      console.error("Login detail error:", error);
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        throw new Error("The server is taking a moment to wake up (Render cold start). Please try again in 10 seconds.");
+      }
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signup = async (userData) => {
