@@ -55,6 +55,55 @@ npm run dev
 
 ---
 
+## 🏗️ Project Architecture
+
+The platform follows a modern full-stack decoupled architecture:
+
+```mermaid
+graph TD
+    User((User)) -->|Interacts| FE[React Frontend]
+    FE -->|API Calls / JWT| BE[FastAPI Backend]
+    BE -->|SQLAlchemy| DB[(PostgreSQL)]
+    BE -->|External Data| TMDB[TMDB API]
+    BE -->|Content Filtering| RE[Recommendation Engine]
+    RE -.->|Scikit-Learn| BE
+```
+
+### 💻 Frontend (Client)
+- **Framework**: `React 18` with `Vite` for ultra-fast HMR.
+- **Styling**: `Tailwind CSS` for a bespoke premium look.
+- **Animations**: `Framer Motion` for fluid cinematic transitions.
+- **Navigation**: `react-router-dom` for seamless SPA experience.
+- **Auth**: Rebranded "Vaen ID" authentication context.
+
+### ⚙️ Backend (Server)
+- **Framework**: `FastAPI` (Python) for high-performance async processing.
+- **ORM**: `SQLAlchemy` for robust database management.
+- **Data**: `PostgreSQL` for persistent user and watchlist storage.
+- **Security**: JWT-based authentication and GZip compression.
+
+### 🤖 AI Recommendation Engine
+- **Model**: Content-based filtering using `Scikit-Learn`.
+- **Logic**: Analyzes movie genres, overviews, and keywords to calculate cosine similarity.
+- **Integration**: Real-time suggestion generation based on user's current view and history.
+
+---
+
+## 🔄 Workflow
+
+### 🛠️ Development Lifecycle
+1.  **Feature Inception**: Define new cinematic features or UI enhancements.
+2.  **Environment Setup**: Activate `.venv` (Backend) and `npm install` (Frontend).
+3.  **Local Testing**: Run `uvicorn main:app` and `npm run dev` concurrently.
+4.  **Schema Migrations**: Update SQLAlchemy models for any new data requirements.
+
+### 🚀 Deployment Strategy
+- **Frontend**: Automated CI/CD via **Vercel** (triggering on `main` branch push).
+- **Backend**: Hosted on **Render** with a managed PostgreSQL instance.
+- **Static Assets**: Movie posters and backdrops served directly from TMDB CDN.
+
+---
+
 ## 🎨 Design Philosophy
 
 The project adheres to "Google Health" inspired minimalism merged with "Apple" premium aesthetics:
