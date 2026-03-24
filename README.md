@@ -4,7 +4,7 @@
 
 A premium, high-fidelity movie discovery and streaming platform inspired by the sleek aesthetics of Apple TV. Built with a modern full-stack architecture, featuring personalized AI recommendations and an immersive user experience.
 
-![Vaen TV+ Dashboard](docs/preview.png)
+![Vaen TV+ Dashboard](docs/dashboard_real.png)
 
 ## ✨ Premium Experience
 
