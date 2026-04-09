@@ -37,10 +37,10 @@ async def startup_event():
 async def shutdown_event():
     await tmdb_service.close()
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {"message": f"Welcome to {settings.PROJECT_NAME} API"}
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health_check():
     return {"status": "healthy"}
