@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Backend
         run: |
-          curl -f https://your-app-name.up.railway.app/health
+          curl -f https://movie-recommender-production-e951.up.railway.app/health
