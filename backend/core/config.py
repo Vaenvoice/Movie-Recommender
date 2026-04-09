@@ -13,26 +13,33 @@ class Settings(BaseSettings):
     def async_database_url(self) -> str:
         url = self.DATABASE_URL
         
-        # Explicit debugging for the user in Render logs
         import os
-        if "RENDER" in os.environ:
+        # Check for deployment environment
+        is_render = "RENDER" in os.environ
+        is_railway = "RAILWAY_PROJECT_ID" in os.environ or "RAILWAY_SERVICE_ID" in os.environ
+        
+        if (is_render or is_railway):
             if not url:
-                print("CRITICAL: DATABASE_URL environment variable is MISSING on Render!")
-                print("Please go to the Render Dashboard -> Environment -> Add Environment Variable")
-                # Intentionally not falling back to localhost on Render
-                raise ValueError("DATABASE_URL is missing in Render environment.")
+                print(f"CRITICAL: DATABASE_URL environment variable is MISSING on {'Render' if is_render else 'Railway'}!")
+                raise ValueError("DATABASE_URL is missing in deployment environment.")
             else:
-                print(f"INFO: DATABASE_URL detected from Render Environment (protocol: {url.split(':')[0]})")
+                provider = "Render" if is_render else "Railway"
+                print(f"INFO: DATABASE_URL detected from {provider} Environment")
         
         if not url:
             # Local fallback for development ONLY
             return "postgresql+asyncpg://postgres:postgres@localhost:5432/netflix_db"
         
-        # Render and other providers often use postgres:// but asyncpg needs postgresql+asyncpg://
+        # Most cloud providers (Render, Railway, Supabase) use postgres:// but asyncpg needs postgresql+asyncpg://
         if url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        elif url.startswith("postgresql://") and "+asyncpg" not in url:
-            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        
+        if "postgresql+asyncpg://" not in url:
+            if url.startswith("postgresql://"):
+                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            else:
+                # Handle cases where it might just be the hostname or invalid protocol
+                pass
         
         return url
 
