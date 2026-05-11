@@ -37,9 +37,13 @@ class Settings(BaseSettings):
         if "postgresql+asyncpg://" not in url:
             if url.startswith("postgresql://"):
                 url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
-            else:
-                # Handle cases where it might just be the hostname or invalid protocol
-                pass
+        
+        # Remove sslmode from URL as asyncpg doesn't support it as a query param
+        # We handle SSL in database.py via connect_args
+        if "sslmode=" in url:
+            import re
+            url = re.sub(r"\?sslmode=[^&]*", "", url)
+            url = re.sub(r"&sslmode=[^&]*", "", url)
         
         return url
 
