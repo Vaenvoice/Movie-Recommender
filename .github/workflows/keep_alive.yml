@@ -1,4 +1,4 @@
-name: Keep Alive (Railway)
+name: Keep Alive (Render)
 
 on:
   schedule:
@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Backend
         run: |
-          curl -f https://movie-recommender-production-e951.up.railway.app/health
+          curl -f https://movie-recommender-backend.onrender.com/health
