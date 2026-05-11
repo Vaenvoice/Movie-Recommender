@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Backend
         run: |
-          curl -f https://movie-recommender-backend.onrender.com/health
+          curl -f https://movie-recommender-3sug.onrender.com/health
