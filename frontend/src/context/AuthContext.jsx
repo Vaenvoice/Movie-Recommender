@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   // Fetch current user details from backend
   const fetchCurrentUser = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/auth/me`);
+      const response = await axios.get(`${API_BASE_URL}/auth/me`, { timeout: 30000 });
       setUser(response.data);
     } catch (error) {
       console.error("Failed to fetch user profile", error);
@@ -38,12 +38,13 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      params.append('username', email);
-      params.append('password', password);
-
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, params, {
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      // Send login request with 60-second timeout for Render backend cold start
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+        email: email,
+        password: password
+      }, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 60000
       });
 
       const { access_token } = response.data;
@@ -51,6 +52,9 @@ export const AuthProvider = ({ children }) => {
       setToken(access_token);
     } catch (error) {
       console.error("Login failed:", error);
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        throw new Error("Server is waking up (Render cold start). Please wait 10 seconds and click Sign In again.");
+      }
       throw error;
     } finally {
       setLoading(false);
@@ -59,7 +63,17 @@ export const AuthProvider = ({ children }) => {
 
   // Signup handler
   const signup = async (userData) => {
-    await axios.post(`${API_BASE_URL}/auth/signup`, userData);
+    try {
+      await axios.post(`${API_BASE_URL}/auth/signup`, userData, {
+        timeout: 60000
+      });
+    } catch (error) {
+      console.error("Signup failed:", error);
+      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+        throw new Error("Server is waking up (Render cold start). Please wait 10 seconds and try again.");
+      }
+      throw error;
+    }
   };
 
   // Logout handler

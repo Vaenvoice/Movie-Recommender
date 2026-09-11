@@ -10,32 +10,23 @@ from api.routers import auth, movies, users, recommendations
 # Lifespan context manager for startup & shutdown events
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: initialize database tables
     await init_db()
     yield
-    # Shutdown: close TMDB httpx client
     await tmdb_service.close()
 
 # Create FastAPI App Instance
 app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
 
-# Setup CORS Middleware for local and production frontends
+# Setup CORS Middleware with regex to support all Vercel, Render, and Local origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:5173",
-        "https://vaentv.vercel.app",
-        "*"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,  # Bearer token auth in headers does not require credentials mode, allowing wildcard origins safely
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include API Routers
+# Include Routers
 app.include_router(auth.router)
 app.include_router(movies.router)
 app.include_router(users.router)
