@@ -1,5 +1,5 @@
-// API Configuration
-// Vite automatically loads variables starting with VITE_ from .env
-const API_BASE_URL = (import.meta.env.VITE_API_URL || "https://movie-recommender-3sug.onrender.com").replace(/\/$/, "");
+// Base API URL configuration for backend requests
+// Defaults to http://localhost:8000 for local development
+const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
 export default API_BASE_URL;

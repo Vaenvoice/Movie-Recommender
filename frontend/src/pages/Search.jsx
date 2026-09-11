@@ -9,60 +9,57 @@ const Search = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [trendingMovies, setTrendingMovies] = useState([]);
-  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     fetchTrending();
   }, []);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (query) {
+    const timer = setTimeout(() => {
+      if (query.trim()) {
         performSearch();
       } else {
         setResults([]);
       }
-    }, 500);
+    }, 400);
 
-    return () => clearTimeout(delayDebounceFn);
+    return () => clearTimeout(timer);
   }, [query]);
 
   const fetchTrending = async () => {
     try {
-      const response = await axios.get(`${API_URL}/movies/trending`);
+      const response = await axios.get(`${API_BASE_URL}/movies/trending`);
       setTrendingMovies(response.data.results || []);
     } catch (error) {
-      console.error("Error fetching trending", error);
+      console.error("Error fetching trending search items:", error);
     }
   };
 
   const performSearch = async () => {
     try {
-      const response = await axios.get(`${API_URL}/movies/search`, { params: { query } });
+      const response = await axios.get(`${API_BASE_URL}/movies/search`, { params: { query } });
       setResults(response.data.results || []);
     } catch (error) {
-      console.error("Search error", error);
+      console.error("Search API error:", error);
     }
   };
 
   const displayMovies = query ? results : trendingMovies;
-  const sectionTitle = query
-    ? (results.length > 0 ? 'Top Results' : null)
-    : 'Trending Now';
+  const sectionTitle = query ? (results.length > 0 ? 'Search Results' : '') : 'Trending Now';
 
   return (
-    <div className="bg-background min-h-screen pb-24 font-sans">
+    <div className="bg-zinc-950 min-h-screen pb-24 text-white font-sans">
       <Navbar />
-      
-      <div className="pt-32 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="relative w-full max-w-3xl mx-auto mb-20 text-center">
-          <h1 className="text-white text-4xl md:text-5xl font-bold mb-8 tracking-tight">Search</h1>
-          <div className="relative group">
-            <SearchIcon className="absolute left-6 top-1/2 -translate-y-1/2 text-white/30 w-6 h-6 group-focus-within:text-appleBlue transition-colors" />
+
+      <div className="pt-28 px-6 md:px-12 max-w-7xl mx-auto">
+        <div className="max-w-2xl mx-auto mb-12 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-6 tracking-tight">Search Movies & TV</h1>
+          <div className="relative">
+            <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 w-5 h-5" />
             <input 
               type="text" 
-              placeholder="Movies, TV Shows, and More" 
-              className="w-full glass bg-white/5 text-white p-5 pl-16 rounded-apple-lg focus:outline-none focus:ring-4 focus:ring-appleBlue/20 text-xl transition-all placeholder:text-white/20"
+              placeholder="Search by title, genre..." 
+              className="w-full bg-zinc-900 text-white pl-12 pr-4 py-4 rounded-xl border border-white/10 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               autoFocus
@@ -72,17 +69,16 @@ const Search = () => {
 
         {displayMovies.length > 0 ? (
           <div>
-            <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-8">{sectionTitle}</h3>
-            <div className="flex flex-wrap items-start gap-x-10 gap-y-16">
+            <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-6">{sectionTitle}</h3>
+            <div className="flex flex-wrap items-start gap-6">
               {displayMovies.map((movie) => (
                 <MovieCard key={movie.id} movie={movie} />
               ))}
             </div>
           </div>
         ) : query ? (
-          <div className="text-center text-white/40 mt-32">
-            <p className="text-2xl font-light italic">No results found for "{query}"</p>
-            <p className="mt-2 text-sm">Check the spelling or try a different title.</p>
+          <div className="text-center text-white/40 mt-20">
+            <p className="text-xl">No results found for "{query}"</p>
           </div>
         ) : null}
       </div>
@@ -91,4 +87,3 @@ const Search = () => {
 };
 
 export default Search;
-

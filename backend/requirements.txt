@@ -1,18 +1,17 @@
+# Simple & Easy FastAPI Backend Requirements
 fastapi
 uvicorn
 gunicorn
-sqlalchemy[asyncio]
+sqlalchemy
+aiosqlite
 asyncpg
 pydantic
 pydantic-settings
-passlib[bcrypt]
+bcrypt
 python-jose[cryptography]
 python-multipart
 scikit-learn
 httpx
 python-dotenv
-email-validator
 pandas
-bcrypt==3.2.0
 numpy
-cachetools

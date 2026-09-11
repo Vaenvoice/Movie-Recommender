@@ -1,54 +1,33 @@
-from pydantic_settings import BaseSettings
-from typing import Optional
+import os
+from dotenv import load_dotenv
 
-class Settings(BaseSettings):
-    PROJECT_NAME: str = "Netflix AI Recommender"
-    DATABASE_URL: Optional[str] = None
-    SECRET_KEY: str = "YOUR_SUPER_SECRET_KEY"
+# Load environment variables from .env file if present
+load_dotenv()
+
+class Settings:
+    PROJECT_NAME: str = os.getenv("PROJECT_NAME", "Netflix AI Recommender")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "student_secret_key_12345")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30 * 24 * 60
-    TMDB_API_KEY: str = ""
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 30  # 30 days
+    TMDB_API_KEY: str = os.getenv("TMDB_API_KEY", "fa9213eff7dfff85e9a80711d1d23d2d")
+    
+    # Database URL configuration (defaults to local SQLite database)
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
 
     @property
     def async_database_url(self) -> str:
-        url = self.DATABASE_URL
+        url = self.DATABASE_URL.strip()
         
-        import os
-        # Check for deployment environment
-        is_render = "RENDER" in os.environ
-        is_railway = "RAILWAY_PROJECT_ID" in os.environ or "RAILWAY_SERVICE_ID" in os.environ
-        
-        if (is_render or is_railway):
-            if not url:
-                print(f"CRITICAL: DATABASE_URL environment variable is MISSING on {'Render' if is_render else 'Railway'}!")
-                raise ValueError("DATABASE_URL is missing in deployment environment.")
-            else:
-                provider = "Render" if is_render else "Railway"
-                print(f"INFO: DATABASE_URL detected from {provider} Environment")
-        
+        # If no database URL is set, use simple local SQLite database file
         if not url:
-            # Local fallback for development ONLY
-            return "postgresql+asyncpg://postgres:postgres@localhost:5432/netflix_db"
+            return "sqlite+aiosqlite:///./movies.db"
         
-        # Most cloud providers (Render, Railway, Supabase) use postgres:// but asyncpg needs postgresql+asyncpg://
+        # Format PostgreSQL URLs for asyncpg if PostgreSQL is supplied
         if url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql+asyncpg://", 1)
-        
-        if "postgresql+asyncpg://" not in url:
-            if url.startswith("postgresql://"):
-                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
-        
-        # Remove sslmode from URL as asyncpg doesn't support it as a query param
-        # We handle SSL in database.py via connect_args
-        if "sslmode=" in url:
-            import re
-            url = re.sub(r"\?sslmode=[^&]*", "", url)
-            url = re.sub(r"&sslmode=[^&]*", "", url)
-        
+        elif url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            
         return url
-
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
 
 settings = Settings()

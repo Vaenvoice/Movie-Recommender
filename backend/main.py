@@ -1,47 +1,51 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
+from contextlib import asynccontextmanager
+
 from core.config import settings
 from core.database import init_db
-from api.routers import auth, movies, users, recommendations
 from core.tmdb import tmdb_service
+from api.routers import auth, movies, users, recommendations
 
-app = FastAPI(title=settings.PROJECT_NAME)
+# Lifespan context manager for startup & shutdown events
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: initialize database tables
+    await init_db()
+    yield
+    # Shutdown: close TMDB httpx client
+    await tmdb_service.close()
 
+# Create FastAPI App Instance
+app = FastAPI(title=settings.PROJECT_NAME, lifespan=lifespan)
+
+# Setup CORS Middleware for local and production frontends
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://vaentv.vercel.app",
         "http://localhost:3000",
         "http://localhost:5173",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
-        "https://*.onrender.com",
+        "https://vaentv.vercel.app",
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.add_middleware(GZipMiddleware, minimum_size=1000)
-
+# Include API Routers
 app.include_router(auth.router)
 app.include_router(movies.router)
 app.include_router(users.router)
 app.include_router(recommendations.router)
 
-@app.on_event("startup")
-async def startup_event():
-    await init_db()
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    await tmdb_service.close()
-
-@app.api_route("/", methods=["GET", "HEAD"])
+# Health & Root Check Endpoints
+@app.get("/")
 async def root():
     return {"message": f"Welcome to {settings.PROJECT_NAME} API"}
 
-@app.api_route("/health", methods=["GET", "HEAD"])
+@app.get("/health")
 async def health_check():
     return {"status": "healthy"}

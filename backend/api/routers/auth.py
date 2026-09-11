@@ -12,19 +12,20 @@ from api.routers.deps import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+# User Signup Route
 @router.post("/signup", response_model=UserResponse)
 async def signup(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
-    # Check if user exists
+    # Check if user email already exists
     result = await db.execute(select(User).where(User.email == user_in.email))
     user_exists = result.scalar_one_or_none()
     
     if user_exists:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The user with this email already exists in the system",
+            detail="A user with this email already exists",
         )
     
-    # Create new user
+    # Create and save new user
     new_user = User(
         name=user_in.name,
         email=user_in.email,
@@ -40,6 +41,7 @@ async def signup(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     await db.refresh(new_user)
     return new_user
 
+# User Login Route
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == form_data.username))
@@ -58,6 +60,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSessi
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+# Read current authenticated user profile
 @router.get("/me", response_model=UserResponse)
 async def read_users_me(current_user: User = Depends(get_current_user)):
     return current_user

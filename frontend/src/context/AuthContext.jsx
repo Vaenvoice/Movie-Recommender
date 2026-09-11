@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../api/config';
 
+// Authentication Context
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
@@ -9,80 +10,80 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
 
-  const API_URL = API_BASE_URL;
-
+  // Set default authorization header whenever token changes
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchCurrentUser();
     } else {
+      setUser(null);
       setLoading(false);
     }
   }, [token]);
 
+  // Fetch current user details from backend
   const fetchCurrentUser = async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/me`);
+      const response = await axios.get(`${API_BASE_URL}/auth/me`);
       setUser(response.data);
     } catch (error) {
-      console.error("Failed to fetch user", error);
+      console.error("Failed to fetch user profile", error);
       logout();
     } finally {
       setLoading(false);
     }
   };
 
-  const toggleWatchlist = async (movieId) => {
-    if (!user) return;
-    const isInWatchlist = user.watchlist?.includes(movieId);
-    const endpoint = isInWatchlist ? `/user/watchlist/remove/${movieId}` : `/user/watchlist/add/${movieId}`;
-    
-    try {
-      await axios.post(`${API_URL}${endpoint}`);
-      // Refresh user data to get updated watchlist
-      await fetchCurrentUser();
-    } catch (error) {
-      console.error("Error toggling watchlist", error);
-    }
-  };
-
+  // Login handler
   const login = async (email, password) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const params = new URLSearchParams();
       params.append('username', email);
       params.append('password', password);
-      
-      const response = await axios.post(`${API_URL}/auth/login`, params, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        timeout: 60000 // 60 seconds for Render cold start
+
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, params, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
-      
+
       const { access_token } = response.data;
       localStorage.setItem('token', access_token);
       setToken(access_token);
     } catch (error) {
-      console.error("Login detail error:", error);
-      if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
-        throw new Error("The server is taking a moment to wake up (Render cold start). Please try again in 10 seconds.");
-      }
+      console.error("Login failed:", error);
       throw error;
     } finally {
       setLoading(false);
     }
   };
 
+  // Signup handler
   const signup = async (userData) => {
-    await axios.post(`${API_URL}/auth/signup`, userData);
+    await axios.post(`${API_BASE_URL}/auth/signup`, userData);
   };
 
+  // Logout handler
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
     delete axios.defaults.headers.common['Authorization'];
+  };
+
+  // Toggle movie in user watchlist
+  const toggleWatchlist = async (movieId) => {
+    if (!user) return;
+    const isInWatchlist = user.watchlist?.includes(movieId);
+    const endpoint = isInWatchlist
+      ? `/user/watchlist/remove/${movieId}`
+      : `/user/watchlist/add/${movieId}`;
+
+    try {
+      await axios.post(`${API_BASE_URL}${endpoint}`);
+      await fetchCurrentUser();
+    } catch (error) {
+      console.error("Error updating watchlist:", error);
+    }
   };
 
   return (

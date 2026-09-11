@@ -6,10 +6,12 @@ from sqlalchemy import select
 from core.config import settings
 from core.database import get_db
 from models.user_db import User
-from models.user import TokenData, UserResponse
+from models.user import TokenData
 
+# OAuth2 scheme for JWT bearer token
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
+# Get current logged-in user from JWT token
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: AsyncSession = Depends(get_db)
@@ -28,6 +30,7 @@ async def get_current_user(
     except JWTError:
         raise credentials_exception
     
+    # Query database for user by email
     result = await db.execute(select(User).where(User.email == token_data.email))
     user = result.scalar_one_or_none()
     

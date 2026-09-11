@@ -2,6 +2,8 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional, List
 from datetime import datetime
 
+# Pydantic schemas for data validation
+
 class UserBase(BaseModel):
     name: str
     email: EmailStr
@@ -15,11 +17,10 @@ class UserResponse(UserBase):
     history: List[int] = []
     likes: List[int] = []
     dislikes: List[int] = []
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
-        json_encoders = {datetime: lambda v: v.isoformat()}
 
 class Token(BaseModel):
     access_token: str

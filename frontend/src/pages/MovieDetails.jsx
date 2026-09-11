@@ -13,7 +13,6 @@ const MovieDetails = () => {
   const { user, toggleWatchlist } = useAuth();
   const [movie, setMovie] = useState(null);
   const [similar, setSimilar] = useState([]);
-  const API_URL = API_BASE_URL;
 
   const isInWatchlist = user?.watchlist?.includes(Number(id));
 
@@ -24,114 +23,97 @@ const MovieDetails = () => {
 
   const fetchMovieDetails = async () => {
     try {
-      const response = await axios.get(`${API_URL}/movies/${id}`);
+      const response = await axios.get(`${API_BASE_URL}/movies/${id}`);
       setMovie(response.data);
       setSimilar(response.data.similar?.results || []);
     } catch (error) {
-      console.error("Error fetching movie details", error);
+      console.error("Error fetching movie details:", error);
     }
   };
 
-  if (!movie) return <div className="h-screen bg-background flex items-center justify-center">Loading...</div>;
+  if (!movie) return <div className="h-screen bg-zinc-950 flex items-center justify-center text-white">Loading...</div>;
 
   return (
-    <div className="bg-background min-h-screen pb-24 font-sans text-white">
+    <div className="bg-zinc-950 min-h-screen pb-24 text-white font-sans">
       <Navbar />
-      
-      {/* Immersive Backdrop Section */}
-      <div className="relative h-[85vh] w-full overflow-hidden">
+
+      {/* Hero Backdrop Banner */}
+      <div className="relative h-[75vh] w-full overflow-hidden">
         <img 
           src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
           alt={movie.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-transparent to-background/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
         
         <button 
           onClick={() => navigate(-1)}
-          className="absolute top-24 right-8 glass p-3 rounded-full hover:bg-white/20 transition-all z-50 group active:scale-90"
+          className="absolute top-24 right-8 bg-black/60 p-3 rounded-full hover:bg-black/90 transition-colors z-50 text-white"
         >
-          <X className="w-6 h-6 text-white group-hover:rotate-90 transition-transform" />
+          <X className="w-6 h-6" />
         </button>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-12">
-          <h1 className="text-5xl md:text-8xl font-bold mb-6 tracking-tight leading-none drop-shadow-2xl">
+          <h1 className="text-4xl md:text-7xl font-bold mb-4 drop-shadow-lg">
             {movie.title}
           </h1>
-          
-          <div className="flex items-center space-x-6 mb-8 text-sm md:text-lg font-medium text-white/80">
-            <span className="text-appleBlue font-bold tracking-wider">★ {movie.vote_average.toFixed(1)}</span>
-            <span className="w-1 h-1 bg-white/20 rounded-full"></span>
+
+          <div className="flex items-center space-x-4 mb-6 text-sm text-white/80 font-medium">
+            <span className="text-blue-400 font-bold">★ {movie.vote_average?.toFixed(1)}</span>
+            <span>•</span>
             <span>{movie.release_date?.split('-')[0]}</span>
-            <span className="w-1 h-1 bg-white/20 rounded-full"></span>
-            <span className="px-2 py-0.5 border border-white/20 rounded-sm text-xs font-bold">4K</span>
-            <span className="w-1 h-1 bg-white/20 rounded-full"></span>
+            <span>•</span>
             <span>{movie.runtime} min</span>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-4">
             <button 
               onClick={() => navigate(`/watch/${id}`)}
-              className="flex items-center space-x-3 bg-white text-black px-10 py-4 rounded-apple-lg font-bold hover:scale-105 transition-all shadow-xl active:scale-95"
+              className="flex items-center space-x-2 bg-white text-black px-8 py-3.5 rounded-xl font-bold hover:bg-white/90 active:scale-95 transition-transform shadow-lg"
             >
-              <Play className="fill-current w-6 h-6" />
+              <Play className="fill-current w-5 h-5" />
               <span>Watch Now</span>
             </button>
             <button 
               onClick={() => toggleWatchlist(Number(id))}
-              className={`flex items-center space-x-3 text-white px-10 py-4 rounded-apple-lg font-bold transition-all border border-white/10 active:scale-95 ${isInWatchlist ? 'bg-appleBlue border-appleBlue shadow-lg shadow-appleBlue/20' : 'glass hover:bg-white/20'}`}
+              className={`flex items-center space-x-2 px-8 py-3.5 rounded-xl font-bold transition-colors border border-white/20 text-white ${isInWatchlist ? 'bg-blue-600 border-blue-600' : 'bg-white/10 hover:bg-white/20'}`}
             >
-              {isInWatchlist ? <Check className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
+              {isInWatchlist ? <Check className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
               <span>{isInWatchlist ? 'In Library' : 'Add to Library'}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Overview & Credits Section */}
-      <div className="max-w-7xl mx-auto px-6 md:px-12 -mt-16 relative z-30">
-        <div className="glass-dark p-8 md:p-12 rounded-apple-lg border border-white/5 shadow-2xl">
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-             <div className="md:col-span-2">
-               <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-4">Overview</h3>
-               <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-light">
-                 {movie.overview}
-               </p>
-             </div>
-             
-             <div className="space-y-8">
-               <div>
-                 <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-3">Starring</h3>
-                 <div className="flex flex-wrap gap-2">
-                   {movie.credits?.cast?.slice(0, 5).map(person => (
-                     <span key={person.id} className="text-white/90 hover:text-appleBlue cursor-pointer transition-colors">
-                       {person.name}
-                     </span>
-                   )).reduce((prev, curr) => [prev, <span className="text-white/20">•</span>, curr])}
-                 </div>
-               </div>
-               
-               <div>
-                  <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-3">Information</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between border-b border-white/5 pb-2">
-                      <span className="text-white/50">Genre</span>
-                      <span>{movie.genres?.map(g => g.name).join(', ')}</span>
-                    </div>
-                    <div className="flex justify-between border-b border-white/5 pb-2">
-                      <span className="text-white/50">Status</span>
-                      <span>{movie.status || 'Released'}</span>
-                    </div>
-                  </div>
-               </div>
-             </div>
-           </div>
+      {/* Movie Information & Overview */}
+      <div className="max-w-6xl mx-auto px-6 -mt-12 relative z-30">
+        <div className="bg-zinc-900/90 border border-white/10 p-8 rounded-2xl shadow-2xl backdrop-blur-md">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-2">
+              <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-3">Overview</h3>
+              <p className="text-lg text-white/90 leading-relaxed font-light">
+                {movie.overview}
+              </p>
+            </div>
+
+            <div className="space-y-4 text-sm">
+              <div>
+                <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-2">Genres</h3>
+                <p className="text-white/90">{movie.genres?.map(g => g.name).join(', ')}</p>
+              </div>
+
+              <div>
+                <h3 className="text-white/40 uppercase tracking-widest text-xs font-bold mb-2">Cast</h3>
+                <p className="text-white/90">{movie.credits?.cast?.slice(0, 5).map(c => c.name).join(', ')}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-24">
-        <Row title="Recommended collection" movies={similar} />
+      {/* Similar Movies Row */}
+      <div className="mt-16">
+        <Row title="Recommended Collection" movies={similar} />
       </div>
     </div>
   );

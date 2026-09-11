@@ -6,13 +6,11 @@ import Banner from '../components/Banner';
 import Row from '../components/Row';
 
 const Home = () => {
-  const [trending, setTrending] = useState([]);
+  const [originals, setOriginals] = useState([]);
   const [popular, setPopular] = useState([]);
   const [topRated, setTopRated] = useState([]);
   const [personalized, setPersonalized] = useState([]);
   const [heroMovie, setHeroMovie] = useState(null);
-  
-  const API_URL = API_BASE_URL;
 
   useEffect(() => {
     fetchData();
@@ -21,17 +19,16 @@ const Home = () => {
   const fetchData = async () => {
     try {
       const endpoints = [
-        `${API_URL}/movies/discover?genre_id=878`,
-        `${API_URL}/movies/trending`,
-        `${API_URL}/movies/top-rated`,
-        `${API_URL}/recommend/personalized`
+        `${API_BASE_URL}/movies/discover?genre_id=878`,
+        `${API_BASE_URL}/movies/trending`,
+        `${API_BASE_URL}/movies/top-rated`,
+        `${API_BASE_URL}/recommend/personalized`
       ];
 
       const results = await Promise.allSettled(endpoints.map(url => axios.get(url)));
-      
-      const [originalRes, trendRes, topRes, recommendRes] = results;
+      const [origRes, trendRes, topRes, recRes] = results;
 
-      if (originalRes.status === 'fulfilled') setTrending(originalRes.value.data.results || []);
+      if (origRes.status === 'fulfilled') setOriginals(origRes.value.data.results || []);
       if (trendRes.status === 'fulfilled') {
         const movies = trendRes.value.data.results || [];
         setPopular(movies);
@@ -40,24 +37,24 @@ const Home = () => {
         }
       }
       if (topRes.status === 'fulfilled') setTopRated(topRes.value.data.results || []);
-      if (recommendRes.status === 'fulfilled') setPersonalized(recommendRes.value.data || []);
+      if (recRes.status === 'fulfilled') setPersonalized(recRes.value.data || []);
 
     } catch (error) {
-      console.error("Error fetching homepage data", error);
+      console.error("Error fetching home page data:", error);
     }
   };
 
   return (
-    <div className="relative pb-24 bg-background min-h-screen">
+    <div className="bg-zinc-950 min-h-screen pb-20 text-white font-sans">
       <Navbar />
       <Banner movie={heroMovie} />
       
-      <div className="relative -mt-4 md:-mt-8 z-20 max-w-7xl mx-auto">
-        <div className="space-y-16">
-          <Row title="Vaen Originals" movies={trending} />
-          <Row title="Recently Added" movies={popular} />
-          <Row title="Critics' Choice" movies={topRated} />
-          <Row title="Selected for You" movies={personalized} />
+      <div className="relative -mt-10 z-20 max-w-7xl mx-auto">
+        <div className="space-y-8">
+          <Row title="Vaen Originals" movies={originals} />
+          <Row title="Trending Now" movies={popular} />
+          <Row title="Top Rated" movies={topRated} />
+          <Row title="Selected For You" movies={personalized} />
         </div>
       </div>
     </div>
